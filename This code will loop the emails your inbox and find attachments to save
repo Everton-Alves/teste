@@ -1,0 +1,70 @@
+'using Visual Basic For Applications, Microsoft Outlook 16.0 Object Library, Microsoft Forms 2.0 Object Library
+
+'Leverage & Lean "Less Clicks, More Results"
+Sub AutoSaveAttachmentsInbox()
+' Means variable is in use
+Dim Attachments As Outlook.Attachments '
+Dim AttachmentsCount As Integer '
+Dim CurrentEmail As Integer '
+Dim Email As Object '
+Dim FolderObj As Object '
+Dim FolderPath As String '
+Dim i As Long '
+Dim OutlookApp As Outlook.Application '
+Dim OutlookNS As Outlook.NameSpace '
+Dim StartFolder As Outlook.MAPIFolder '
+Dim StartFolderItems As Outlook.Items '
+Dim User As String '
+ 
+On Error GoTo LeverageLean
+
+User = (Environ$("Username")) 'Identify Username
+FolderPath = "C:\Users\" & User & "\Desktop\Attachments" 'Default create Attachments Folder on Desktop. You can update the FolderPath to somewhere else.
+
+Set FolderObj = CreateObject("Scripting.FileSystemObject")
+If FolderObj.FolderExists(FolderPath) Then 'The Folder has been found
+Else: FolderObj.CreateFolder (FolderPath) 'The Folder has been created
+End If
+ 
+Set OutlookApp = Outlook.Application
+Set OutlookNS = OutlookApp.GetNamespace("MAPI")
+Set StartFolder = OutlookNS.GetDefaultFolder(olFolderInbox) 'Default Outlook Account's Inbox
+'Set StartFolder = OutlookNS.Folders("ACCOUNT NAME").Folders("Inbox") 'Different Outlook Account's Inbox
+Set StartFolderItems = StartFolder.Items
+
+AttachmentsCount = 0 'Track how many Attachments are saved
+
+For CurrentEmail = StartFolderItems.Count To 1 Step -1 'Loop through emails in Start Folder
+Set Email = StartFolderItems(CurrentEmail)
+'If Email.SenderEmailAddress = "" Or Email.Categories = "" Or Email.Subject = "" Or InStr(1, Email.Subject, "Search for Text") > 1 Then
+Set Attachments = Email.Attachments
+For i = Attachments.Count To 1 Step -1
+'If InStr(1, Attachments.Item(i).Filename, "File Type Extension") > 1 Then 'Check File Type before saving
+Attachments.Item(i).SaveAsFile FolderPath & "\" & Format(Email.ReceivedTime, "MM.DD.YYYY hhmm") & "_" & Attachments.Item(i).fileName 'Save attachment to the Folder Path using naming convention: Email's Received Time - Attachment's File Name
+AttachmentsCount = AttachmentsCount + 1
+'End If
+Next i
+'End If
+Next
+
+If AttachmentsCount > 0 Then
+MsgBox "Email Attachment(s) have been saved to the Attachments folder on your Desktop."
+ElseIf AttachmentsCount = 0 Then
+MsgBox "No Email Attachment(s) were found to save."
+End If
+
+Set Attachments = Nothing
+Set Email = Nothing
+Set FolderObj = Nothing
+Set OutlookApp = Nothing
+Set OutlookNS = Nothing
+Set StartFolder = Nothing
+Set StartFolderItems = Nothing
+
+Exit Sub
+
+LeverageLean:
+MsgBox (Err.Number & " - " & Err.Description & vbNewLine & vbNewLine & "Don't hesitate to email me: brentschneider@leveragelean.com")
+  
+End Sub
+'Stay Awesome
