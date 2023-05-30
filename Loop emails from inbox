@@ -1,21 +1,10 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
-def automatizar_rotina(numero):
-    # Configurar o driver do Selenium (utilizando o ChromeDriver neste exemplo)
-    driver = webdriver.Chrome('caminho_para_o_chromedriver.exe')  # Substitua pelo caminho correto para o ChromeDriver
+# Configurar o driver do Selenium com o ChromeDriver
+driver = webdriver.Chrome(ChromeDriverManager().install())
 
-    # Abrir o site
-    driver.get('http://www.exemplo.com')  # Substitua pelo URL correto do site que deseja automatizar
+# Restante do código para automatizar a rotina
 
-    # Executar a rotina
-    # Aqui você pode adicionar as ações que deseja automatizar no site
-
-    # Por exemplo, preencher um campo com o número recebido como parâmetro
-    campo_numero = driver.find_element_by_id('id_do_campo')  # Substitua pelo ID correto do campo no site
-    campo_numero.send_keys(str(numero))
-
-    # Finalizar o driver
-    driver.quit()
-
-# Chamar a função com o número desejado
-automatizar_rotina(123)
+# Finalizar o driver
+driver.quit()
