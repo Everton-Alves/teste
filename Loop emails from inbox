@@ -1,8 +1,13 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 def automatizar_rotina(numero):
-    # Configurar o driver do Selenium (utilizando o ChromeDriver neste exemplo)
-    driver = webdriver.Chrome('caminho_para_o_chromedriver.exe')  # Substitua pelo caminho correto para o ChromeDriver
+    # Configurar as opções do ChromeDriver em modo headless
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+
+    # Configurar o driver do Selenium com as opções do ChromeDriver
+    driver = webdriver.Chrome(options=chrome_options)
 
     # Abrir o site
     driver.get('http://www.exemplo.com')  # Substitua pelo URL correto do site que deseja automatizar
