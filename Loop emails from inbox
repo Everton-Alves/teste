@@ -1,8 +1,8 @@
 from selenium import webdriver
 
 def automatizar_rotina(numero):
-    # Configurar o driver do Selenium com o Microsoft Edge
-    driver = webdriver.Edge()
+    # Configurar o driver do Selenium (utilizando o ChromeDriver neste exemplo)
+    driver = webdriver.Chrome('caminho_para_o_chromedriver.exe')  # Substitua pelo caminho correto para o ChromeDriver
 
     # Abrir o site
     driver.get('http://www.exemplo.com')  # Substitua pelo URL correto do site que deseja automatizar
