@@ -1,41 +1,17 @@
 from selenium import webdriver
-from selenium.webdriver.edge.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-def executar_rotina(numero):
-    # Configura o serviço do navegador Edge
-    service = Service('caminho_para_o_executável_do_Edge')
+# Configurar o driver do Selenium (nesse exemplo, estou usando o ChromeDriver)
+driver = webdriver.Chrome()
 
-    # Configura as opções do navegador Edge
-    options = webdriver.EdgeOptions()
-    # Opções adicionais podem ser configuradas aqui, se necessário
+# Abrir o site ou página onde está o elemento que você deseja clicar
+driver.get("https://www.example.com")
 
-    # Inicializa o navegador Edge
-    driver = webdriver.Edge(service=service, options=options)
+# Localizar o elemento pelo atributo tabindex e pelo texto
+element = driver.find_element(By.XPATH, "//input[@tabindex='1' and contains(text(), 'Relatórios')]")
 
-    try:
-        # Navega até a página do site
-        driver.get('https://exemplo.com')
+# Clicar no elemento
+element.click()
 
-        # Insira aqui as ações que você deseja automatizar no site
-        # Por exemplo, preencher um formulário com o número fornecido como parâmetro
-        numero_input = driver.find_element(By.ID, 'id_do_elemento_input')
-        numero_input.send_keys(numero)
-
-        # Aguarda até que a ação seja concluída
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, 'id_do_elemento_resultado'))
-        )
-
-        # Capture o resultado da rotina, se necessário
-        resultado = driver.find_element(By.ID, 'id_do_elemento_resultado').text
-        print(f'Resultado: {resultado}')
-
-    finally:
-        # Fecha o navegador
-        driver.quit()
-
-# Exemplo de uso
-executar_rotina(12345)
+# Fechar o navegador
+driver.quit()
