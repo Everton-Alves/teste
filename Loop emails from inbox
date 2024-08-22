@@ -1,17 +1,35 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+Sub CopiarDadosParaNovoWorkbook()
+    Dim wbNovo As Workbook
+    Dim wsAtual As Worksheet
+    Dim wsNovo As Worksheet
+    Dim nomeSheets As Variant
+    Dim i As Integer
 
-# Configurar o driver do Selenium (nesse exemplo, estou usando o ChromeDriver)
-driver = webdriver.Chrome()
+    ' Define os nomes das sheets que serão copiadas
+    nomeSheets = Array("Fundos", "Renda Fixa", "Renda Variável", "Conta Corrente")
 
-# Abrir o site ou página onde está o elemento que você deseja clicar
-driver.get("https://www.example.com")
+    ' Cria um novo workbook
+    Set wbNovo = Workbooks.Add
 
-# Localizar o elemento pelo atributo tabindex e pelo texto
-element = driver.find_element(By.XPATH, "//input[@tabindex='1' and contains(text(), 'Relatórios')]")
+    ' Itera pelas sheets especificadas
+    For i = LBound(nomeSheets) To UBound(nomeSheets)
+        ' Verifica se a sheet existe
+        On Error Resume Next
+        Set wsAtual = ThisWorkbook.Sheets(nomeSheets(i))
+        On Error GoTo 0
+        
+        If Not wsAtual Is Nothing Then
+            ' Adiciona uma nova sheet no workbook novo
+            Set wsNovo = wbNovo.Sheets.Add
+            wsNovo.Name = nomeSheets(i)
+            
+            ' Copia os dados das colunas A até J para a nova sheet
+            wsAtual.Range("A:J").Copy Destination:=wsNovo.Range("A1")
+        End If
+        ' Limpa a referência para a próxima iteração
+        Set wsAtual = Nothing
+    Next i
 
-# Clicar no elemento
-element.click()
-
-# Fechar o navegador
-driver.quit()
+    ' Salva e exibe o novo workbook
+    wbNovo.Activate
+End Sub
