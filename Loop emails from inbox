@@ -1,35 +1,49 @@
-Sub CopiarDadosParaNovoWorkbook()
-    Dim wbNovo As Workbook
-    Dim wsAtual As Worksheet
-    Dim wsNovo As Worksheet
-    Dim nomeSheets As Variant
-    Dim i As Integer
-
-    ' Define os nomes das sheets que serão copiadas
-    nomeSheets = Array("Fundos", "Renda Fixa", "Renda Variável", "Conta Corrente")
-
-    ' Cria um novo workbook
-    Set wbNovo = Workbooks.Add
-
-    ' Itera pelas sheets especificadas
-    For i = LBound(nomeSheets) To UBound(nomeSheets)
-        ' Verifica se a sheet existe
-        On Error Resume Next
-        Set wsAtual = ThisWorkbook.Sheets(nomeSheets(i))
-        On Error GoTo 0
+Sub CopiarPlanilhas()
+    Dim pasta As String
+    Dim arquivo As String
+    Dim wbOrigem As Workbook
+    Dim ws As Worksheet
+    Dim wsNome As Variant
+    Dim nomePlanilhas As Variant
+    Dim wbDestino As Workbook
+    Dim wsDestino As Worksheet
+    
+    ' Definir o diretório onde estão os arquivos .xlsx
+    pasta = "C:\Caminho\Para\Sua\Pasta\"  ' Alterar para o caminho correto
+    arquivo = Dir(pasta & "*.xlsx")
+    
+    ' Definir o workbook de destino (onde a macro está rodando)
+    Set wbDestino = ThisWorkbook
+    
+    ' Nomes das planilhas a serem copiadas
+    nomePlanilhas = Array("Capa", "Fundos", "Renda Fixa", "Renda Variável", "Conta Corrente")
+    
+    ' Verificar se existem arquivos .xlsx
+    Do While arquivo <> ""
+        ' Abrir o arquivo .xlsx
+        Set wbOrigem = Workbooks.Open(pasta & arquivo)
         
-        If Not wsAtual Is Nothing Then
-            ' Adiciona uma nova sheet no workbook novo
-            Set wsNovo = wbNovo.Sheets.Add
-            wsNovo.Name = nomeSheets(i)
+        ' Loop pelas planilhas específicas
+        For Each wsNome In nomePlanilhas
+            On Error Resume Next ' Ignorar erro se a planilha não existir
+            Set ws = wbOrigem.Sheets(wsNome)
+            On Error GoTo 0 ' Retomar tratamento de erro padrão
             
-            ' Copia os dados das colunas A até J para a nova sheet
-            wsAtual.Range("A:J").Copy Destination:=wsNovo.Range("A1")
-        End If
-        ' Limpa a referência para a próxima iteração
-        Set wsAtual = Nothing
-    Next i
-
-    ' Salva e exibe o novo workbook
-    wbNovo.Activate
+            If Not ws Is Nothing Then
+                ' Copiar a planilha para o workbook de destino
+                ws.Copy After:=wbDestino.Sheets(wbDestino.Sheets.Count)
+            End If
+            
+            ' Limpar a variável ws para evitar erros na próxima iteração
+            Set ws = Nothing
+        Next wsNome
+        
+        ' Fechar o workbook de origem sem salvar
+        wbOrigem.Close False
+        
+        ' Próximo arquivo
+        arquivo = Dir
+    Loop
+    
+    MsgBox "Planilhas copiadas com sucesso!"
 End Sub
